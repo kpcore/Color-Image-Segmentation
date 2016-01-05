@@ -245,7 +245,6 @@ int **connecting_component_labeling(int **k_meansMatrix, int height, int width, 
     return componentMatrix;
 }
 
-
 int main(int argc, char *argv[])
 {
     int height, width, channels, size, k_means_value, hue_size;
@@ -292,8 +291,6 @@ int main(int argc, char *argv[])
     // create a window
     cvNamedWindow("mainWin", CV_WINDOW_AUTOSIZE);
     cvMoveWindow("mainWin", 100, 100);
-
-
 
     // show the image
     cvShowImage("mainWin", img );
