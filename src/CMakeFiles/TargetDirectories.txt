@@ -1,1 +1,0 @@
-/home/kpcore/Desktop/Color-Image-Segmentation/src/CMakeFiles/main.dir
