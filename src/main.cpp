@@ -73,7 +73,6 @@ int **k_means(int **hueMatrix, int height, int width, int k_means_value)
 	{
 	    int row = rand() % height;
 	    int column = rand() % width;
-
 	    k_means_classes[i].class_center = (double)hueMatrix[row][column];
 	    printf("\nInitialize cluster centers: %lf\n",k_means_classes[i].class_center);
 	}
@@ -137,7 +136,7 @@ int **k_means(int **hueMatrix, int height, int width, int k_means_value)
 	{
 	    if( k_means_classes[i].element_count == 0)
             k_means_classes[i].class_center = -360;
-        printf("\ni: %d Compute cluster %lf elements number %lf",i,k_means_classes[i].class_center,k_means_classes[i].element_count);
+        printf("\n i -> %d Compute cluster %lf elements number %lf",i,k_means_classes[i].class_center,k_means_classes[i].element_count);
 	}
 
     // calculated values write the text
@@ -247,12 +246,9 @@ int **connecting_component_labeling(int **k_meansMatrix, int height, int width, 
 
 int main(int argc, char *argv[])
 {
-    int height, width, channels, size, k_means_value, hue_size;
-    int **hueMatrix;
-
-    unsigned int *hue;
+    int height, width, channels, size, k_means_value;
     IplImage* img = 0;
-    int i,j,k;
+    int i, j, segment_value, range = 15;
     uchar *data;
 
     if(argc<2)
@@ -273,27 +269,37 @@ int main(int argc, char *argv[])
     width     = img->width;
     channels  = img->nChannels;
     data      = (uchar *)img->imageData;
-
+    printf("\nProcessing a %dx%d image with %d channels\n", height, width, channels);
     size = height*width*channels;
     // invert the image
     int rgb[size];
     for(i = 0; i < size; i++)
         rgb[i] = (int)data[i];
 
-    hueMatrix = rgb_to_h(rgb, height, width);
+    int **hueMatrix = rgb_to_h(rgb, height, width);
 
 	printf("\n Enter the K cluster number:\n");
     scanf("%d",&k_means_value);
     int **k_meansMatrix = k_means(hueMatrix, height, width, k_means_value);
+    int **componentMatrix = connecting_component_labeling(k_meansMatrix, height, width, k_means_value);
 
-    printf("\nProcessing a %dx%d image with %d channels\n", height, width, channels);
+    for(i = 0; i < height; i++)
+    {
+        for(j = 0; j < width; j++)
+        {
+            segment_value = (componentMatrix[i][j] - k_means_value)*range;
+            data[i*width*3 + j*3] = segment_value % 255;
+            data[i*width*3 + j*3 + 1] = (segment_value * range) % 255;
+            data[i*width*3 + j*3 + 2] = abs(255 - segment_value) % 255;
+        }
+    }
 
     // create a window
-    cvNamedWindow("mainWin", CV_WINDOW_AUTOSIZE);
-    cvMoveWindow("mainWin", 100, 100);
+    cvNamedWindow("k-Means", CV_WINDOW_AUTOSIZE);
+    cvMoveWindow("k-Means", 100, 100);
 
     // show the image
-    cvShowImage("mainWin", img );
+    cvShowImage("k-Means", img );
 
     // wait for a key
     cvWaitKey(0);
