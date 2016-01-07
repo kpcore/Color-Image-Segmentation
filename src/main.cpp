@@ -1,3 +1,17 @@
+
+/**
+ * Created by Kenan Polat on 05.01.2016
+ */
+
+/******************************************************************************
+ *
+ *  Compilation:    cmake .
+ *                  make               
+ *  Execution:     ./main test.jpg
+ * 
+ ******************************************************************************/
+
+
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
